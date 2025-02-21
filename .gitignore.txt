@@ -1,0 +1,52 @@
+# Ignore system directories
+AppData/
+Local Settings/
+Documents/
+Favorites/
+Saved Games/
+Searches/
+Templates/
+Start Menu/
+My Documents/
+Music/
+Videos/
+Pictures/
+OneDrive/
+
+# Ignore hidden configuration and logs
+*.log
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+ntuser.dat*
+desktop.ini
+
+# Ignore SSH keys and authentication files
+.ssh/
+.aws/
+
+# Ignore Python and Jupyter Notebook caches
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+.env/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore IDE and editor settings
+.vscode/
+.idea/
+*.iml
+*.class
+*.project
+*.settings/
+*.classpath
+
+# Ignore Terraform files
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
