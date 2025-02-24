@@ -1,0 +1,38 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: 'latest'
+
+  - script: |
+      echo "Logging into Docker Hub..."
+      echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+    displayName: "Login to Docker Hub"
+
+  - script: |
+      echo "Building Docker Image..."
+      docker build -t vishrut33/docker-app:latest .
+    displayName: "Build Docker Image"
+
+  - script: |
+      echo "Pushing Docker Image to Docker Hub..."
+      docker push vishrut33/docker-app:latest
+    displayName: "Push Docker Image"
+
+  - script: |
+      echo "Deploying to EC2..."
+      ssh -o StrictHostKeyChecking=no ec2-user@$(EC2_IP) << 'EOF'
+      docker stop webapp || true
+      docker rm webapp || true
+      docker pull vishrut33/docker-app:latest
+      docker run -d -p 80:5000 --name webapp vishrut33/docker-app:latest
+      EOF
+    displayName: "Deploy to EC2"
+
