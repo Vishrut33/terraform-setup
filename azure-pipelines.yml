@@ -1,66 +1,42 @@
 trigger:
   branches:
     include:
-      - main  # Runs when code is pushed to 'main' branch
+      - main
 
 pool:
-  vmImage: 'ubuntu-latest'  # Uses Microsoft-hosted Ubuntu agent
-
-variables:
-  DOCKER_USERNAME: '<your-dockerhub-username>'
-  DOCKER_PASSWORD: '<your-dockerhub-password>'
-  DOCKER_IMAGE_NAME: '<your-dockerhub-username>/docker-app'
-  EC2_USER: 'ec2-user'
-  EC2_IP: '<your-ec2-public-ip>'
-  PRIVATE_KEY: $(EC2_SSH_PRIVATE_KEY)  # Set this in Azure DevOps secrets
+  vmImage: 'ubuntu-latest'
 
 steps:
-  - checkout: self
-
-  # ✅ 1️⃣ Manually Install Docker
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: 'latest'
+      
   - script: |
-      echo "Checking if Docker is installed..."
-      if ! command -v docker &> /dev/null; then
-        echo "Docker not found, installing..."
-        sudo apt-get update && sudo apt-get install -y docker.io
-      else
-        echo "Docker is already installed."
-      fi
-    displayName: "Install Docker (if missing)"
+      sudo apt update
+      sudo apt install -y docker-ce docker-ce-cli containerd.io
+    displayName: "Install Docker on Hosted Agent"
 
-  # ✅ 2️⃣ Start Docker Service
-  - script: |
-      sudo systemctl start docker
-      sudo systemctl enable docker
-    displayName: "Start Docker Service"
-
-  # ✅ 3️⃣ Log in to Docker Hub
   - script: |
       echo "Logging into Docker Hub..."
       echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-    displayName: "Docker Login"
+    displayName: "Login to Docker Hub"
 
-  # ✅ 4️⃣ Build the Docker Image
   - script: |
       echo "Building Docker Image..."
-      docker build -t $(DOCKER_IMAGE_NAME):latest .
+      docker build -t vishrut33/docker-app:latest .
     displayName: "Build Docker Image"
 
-  # ✅ 5️⃣ Push Docker Image to Docker Hub
   - script: |
       echo "Pushing Docker Image to Docker Hub..."
-      docker push $(DOCKER_IMAGE_NAME):latest
+      docker push vishrut33/docker-app:latest
     displayName: "Push Docker Image"
 
-  # ✅ 6️⃣ Deploy to EC2 via SSH
   - script: |
       echo "Deploying to EC2..."
-      echo "$(PRIVATE_KEY)" > private_key.pem
-      chmod 600 private_key.pem
-      ssh -o StrictHostKeyChecking=no -i private_key.pem $(EC2_USER)@$(EC2_IP) << 'EOF'
-      sudo docker stop webapp || true
-      sudo docker rm webapp || true
-      sudo docker pull $(DOCKER_IMAGE_NAME):latest
-      sudo docker run -d -p 80:5000 --name webapp $(DOCKER_IMAGE_NAME):latest
+      ssh -o StrictHostKeyChecking=no ec2-user@$(EC2_IP) << 'EOF'
+      docker stop webapp || true
+      docker rm webapp || true
+      docker pull vishrut33/docker-app:latest
+      docker run -d -p 80:5000 --name webapp vishrut33/docker-app:latest
       EOF
-    displayName: "Deploy Docker Container on EC2"
+    displayName: "Deploy to EC2"
