@@ -7,8 +7,8 @@ pool:
   vmImage: 'ubuntu-latest'  # Uses Microsoft-hosted Ubuntu agent
 
 variables:
-  DOCKER_USERNAME: '<your-dockerhub-username>'
-  DOCKER_PASSWORD: '<your-dockerhub-password>'
+  DOCKER_USERNAME: 'Vishrut33'
+  DOCKER_PASSWORD: 'Tysonmypet3'
   DOCKER_IMAGE_NAME: '<your-dockerhub-username>/docker-app'
   EC2_USER: 'ec2-user'
   EC2_IP: '<your-ec2-public-ip>'
