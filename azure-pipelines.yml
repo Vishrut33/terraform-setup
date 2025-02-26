@@ -26,6 +26,12 @@ steps:
       sudo systemctl start docker
       sudo systemctl enable docker
     displayName: "Start Docker Service"
+    
+  - script: |
+      echo "DOCKER_USERNAME: $(DOCKER_USERNAME)"
+      echo "DOCKER_PASSWORD length: ${#DOCKER_PASSWORD}"
+    displayName: "Debug: Check Docker Credentials"
+
 
   # ✅ 3️⃣ Log in to Docker Hub
   - script: |
