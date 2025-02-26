@@ -1,6 +1,6 @@
 # Define the AWS Provider
 provider "aws" {
-  region = "ap-south-1"  # Change this to your AWS region (e.g., Mumbai)
+  region = "ap-south-1"  
 }
 
 # Create a Security Group
