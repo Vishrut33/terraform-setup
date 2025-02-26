@@ -6,6 +6,8 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'  # Uses Microsoft-hosted Ubuntu agent
 
+variables:
+  - group: Docker
 
 steps:
   - checkout: self
