@@ -6,13 +6,6 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'  # Uses Microsoft-hosted Ubuntu agent
 
-variables:
-  DOCKER_USERNAME: '<Your username>'
-  DOCKER_PASSWORD: '<Password>'
-  DOCKER_IMAGE_NAME: '<your-dockerhub-username>/docker-app'
-  EC2_USER: 'ec2-user'
-  EC2_IP: '<your-ec2-public-ip>'
-  PRIVATE_KEY: $(EC2_SSH_PRIVATE_KEY)  # Set this in Azure DevOps secrets
 
 steps:
   - checkout: self
