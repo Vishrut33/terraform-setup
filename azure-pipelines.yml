@@ -56,9 +56,9 @@ steps:
   # ✅ 6️⃣ Deploy to EC2 via SSH
   - script: |
       echo "Deploying to EC2..."
-      echo "$(PRIVATE_KEY)" > private_key.pem
+      echo "$(EC2_SSH_PRIVATE_KEY)" > private_key.pem
       chmod 600 private_key.pem
-      ssh -o StrictHostKeyChecking=no -i private_key.pem $(EC2_USER)@$(EC2_IP) << 'EOF'
+      ssh -o StrictHostKeyChecking=no -i private_key.pem ec2-user@15.207.21.138 "hostname"
       sudo docker stop webapp || true
       sudo docker rm webapp || true
       sudo docker pull $(DOCKER_IMAGE_NAME):latest
