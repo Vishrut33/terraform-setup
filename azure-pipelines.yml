@@ -58,7 +58,7 @@ steps:
       echo "Deploying to EC2..."
       echo "$(EC2_SSH_PRIVATE_KEY)" > private_key.pem
       chmod 600 private_key.pem
-      ssh -o StrictHostKeyChecking=no -i private_key.pem ec2-user@15.207.21.138 "hostname"
+      ssh -o StrictHostKeyChecking=no -i private_key.pem ec2-user@13.200.243.143 "hostname"
       sudo docker stop webapp || true
       sudo docker rm webapp || true
       sudo docker pull $(DOCKER_IMAGE_NAME):latest
