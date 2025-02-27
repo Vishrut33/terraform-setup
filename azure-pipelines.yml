@@ -1,68 +1,19 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 trigger:
-  branches:
-    include:
-      - main  # Runs when code is pushed to 'main' branch
+- main
 
 pool:
-  vmImage: 'ubuntu-latest'  # Uses Microsoft-hosted Ubuntu agent
-
-variables:
-  - group: Docker
+  vmImage: ubuntu-latest
 
 steps:
-  - checkout: self
+- script: echo "hey hi"
+  displayName: 'Run a one-line script'
 
-  # ✅ 1️⃣ Manually Install Docker
-  - script: |
-      echo "Checking if Docker is installed..."
-      if ! command -v docker &> /dev/null; then
-        echo "Docker not found, installing..."
-        sudo apt-get update && sudo apt-get install -y docker.io
-      else
-        echo "Docker is already installed."
-      fi
-    displayName: "Install Docker (if missing)"
-
-  # ✅ 2️⃣ Start Docker Service
-  - script: |
-      sudo systemctl start docker
-      sudo systemctl enable docker
-    displayName: "Start Docker Service"
-    
-  - script: |
-      echo "DOCKER_USERNAME: $(DOCKER_USERNAME)"
-      echo "DOCKER_PASSWORD length: ${#DOCKER_PASSWORD}"
-    displayName: "Debug: Check Docker Credentials"
-
-
-  # ✅ 3️⃣ Log in to Docker Hub
-  - script: |
-      echo "Logging into Docker Hub..."
-      echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-    displayName: "Docker Login"
-
-  # ✅ 4️⃣ Build the Docker Image
-  - script: |
-      echo "Building Docker Image..."
-      docker build -t $(DOCKER_IMAGE_NAME):latest .
-    displayName: "Build Docker Image"
-
-  # ✅ 5️⃣ Push Docker Image to Docker Hub
-  - script: |
-      echo "Pushing Docker Image to Docker Hub..."
-      docker push $(DOCKER_IMAGE_NAME):latest
-    displayName: "Push Docker Image"
-
-  # ✅ 6️⃣ Deploy to EC2 via SSH
-  - script: |
-      echo "Deploying to EC2..."
-      echo "$(EC2_SSH_PRIVATE_KEY)" > private_key.pem
-      chmod 600 private_key.pem
-      ssh -o StrictHostKeyChecking=no -i private_key.pem ec2-user@13.200.243.143 "hostname"
-      sudo docker stop webapp || true
-      sudo docker rm webapp || true
-      sudo docker pull $(DOCKER_IMAGE_NAME):latest
-      sudo docker run -d -p 80:5000 --name webapp $(DOCKER_IMAGE_NAME):latest
-      EOF
-    displayName: "Deploy Docker Container on EC2"
-
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
